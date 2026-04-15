@@ -99,3 +99,37 @@
 }
 .assistant-markdown strong { @apply text-manuscrito-900 font-bold; }
 .assistant-markdown em { @apply text-manuscrito-600; }
+
+/* Tables */
+.assistant-markdown table {
+  @apply w-full my-4 text-sm border-collapse rounded-lg overflow-hidden;
+}
+.assistant-markdown thead {
+  @apply bg-ultramarine-50;
+}
+.assistant-markdown th {
+  @apply px-4 py-2.5 text-left font-bold text-ultramarine-800 border-b-2 border-ultramarine-200;
+}
+.assistant-markdown td {
+  @apply px-4 py-2 text-manuscrito-700 border-b border-ivory-200;
+}
+.assistant-markdown tbody tr:hover {
+  @apply bg-ivory-50;
+}
+.assistant-markdown tbody tr:last-child td {
+  @apply border-b-0;
+}
+
+/* SVG diagrams inline */
+.assistant-markdown svg {
+  @apply w-full h-auto max-w-full;
+}
+.assistant-markdown svg text {
+  font-family: 'Carlito', 'Calibri', system-ui, sans-serif;
+}
+.assistant-markdown svg rect {
+  rx: 6;
+}
+.assistant-markdown .svg-container {
+  @apply my-4 p-4 bg-ivory-50 border border-ivory-200 rounded-xl overflow-x-auto;
+} 

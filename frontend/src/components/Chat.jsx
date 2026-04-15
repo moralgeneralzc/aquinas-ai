@@ -6,6 +6,49 @@ import {
   MessageCircle, AlertCircle
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+
+/** Custom renderer for code blocks — renders ```svg as inline SVG */
+function CodeBlock({ node, className, children, ...props }) {
+  const lang = className?.replace('language-', '') || '';
+  const code = String(children).trim();
+
+  // Render SVG code blocks as actual SVG
+  if (lang === 'svg' || code.startsWith('<svg')) {
+    return (
+      <div
+        className="my-4 p-4 bg-ivory-50 border border-ivory-200 rounded-xl overflow-x-auto"
+        dangerouslySetInnerHTML={{ __html: code }}
+      />
+    );
+  }
+
+  // Normal code blocks
+  return (
+    <code className={`${className || ''} bg-ivory-200 px-1.5 py-0.5 rounded text-sm text-ultramarine-700`} {...props}>
+      {children}
+    </code>
+  );
+}
+
+/** Custom pre block to pass through to CodeBlock */
+function PreBlock({ children, ...props }) {
+  // If the child is a code element with SVG, don't wrap in <pre>
+  const child = children?.props;
+  const code = String(child?.children || '').trim();
+  const lang = child?.className?.replace('language-', '') || '';
+
+  if (lang === 'svg' || code.startsWith('<svg')) {
+    return <CodeBlock className={child?.className} {...child}>{child?.children}</CodeBlock>;
+  }
+
+  return (
+    <pre className="my-3 p-3 bg-ivory-100 border border-ivory-200 rounded-lg overflow-x-auto text-sm" {...props}>
+      {children}
+    </pre>
+  );
+}
 
 export default function Chat({ conversationId, onConversationCreated }) {
   const { profile, refreshProfile } = useAuth();
@@ -165,7 +208,11 @@ export default function Chat({ conversationId, onConversationCreated }) {
                 <div className={`max-w-[85%] ${msg.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-assistant'}`}>
                   {msg.role === 'assistant' ? (
                     <div className="assistant-markdown">
-                      <ReactMarkdown>{msg.content || '...'}</ReactMarkdown>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw]}
+                        components={{ code: CodeBlock, pre: PreBlock }}
+                      >{msg.content || '...'}</ReactMarkdown>
                     </div>
                   ) : (
                     <p>{msg.content}</p>
@@ -178,7 +225,11 @@ export default function Chat({ conversationId, onConversationCreated }) {
                           <span key={j} className="source-chip">
                             <BookOpenCheck className="w-3 h-3" />
                             {s.obra} — {s.referencia}
-                            {s.similarity && <span className="text-halo-600 ml-1">{s.similarity}</span>}
+                            {s.similarity && <span className="text-halo-600 ml-1">{
+                              typeof s.similarity === 'number'
+                                ? (s.similarity * 100).toFixed(1) + '%'
+                                : s.similarity
+                            }</span>}
                           </span>
                         ))}
                       </div>
