@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #CCC8C1 transparent;
+  }
+  *::-webkit-scrollbar { width: 6px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb { background: #CCC8C1; border-radius: 3px; }
+
+  ::selection {
+    background: #AAB8E140;
+    color: #1E1C1A;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/80 backdrop-blur-sm border border-ivory-300/80 rounded-xl shadow-sm;
+  }
+
+  .btn-primary {
+    @apply px-5 py-2.5 bg-ultramarine-600 hover:bg-ultramarine-500 text-white
+           rounded-lg font-sans font-bold transition-all duration-200
+           border border-ultramarine-500/50 hover:border-ultramarine-400/50
+           shadow-md shadow-ultramarine-600/15 hover:shadow-ultramarine-500/25
+           active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-ivory-200 hover:bg-ivory-300 text-manuscrito-700
+           rounded-lg font-sans font-bold transition-all duration-200
+           border border-ivory-400/60 hover:border-ivory-400;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 bg-white border border-ivory-300
+           rounded-lg text-manuscrito-800 placeholder-manuscrito-300
+           focus:outline-none focus:border-ultramarine-400 focus:ring-2 focus:ring-ultramarine-100
+           font-sans transition-all duration-200;
+  }
+
+  .source-chip {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 bg-halo-50
+           border border-halo-200 rounded-md text-xs font-sans
+           text-halo-800 hover:bg-halo-100 transition-colors cursor-pointer;
+  }
+
+  .chat-bubble-user {
+    @apply bg-ultramarine-50 border border-ultramarine-200/60 rounded-2xl rounded-br-md
+           px-5 py-3.5 text-manuscrito-800 font-sans;
+  }
+
+  .chat-bubble-assistant {
+    @apply bg-white border border-ivory-300/80 rounded-2xl rounded-bl-md
+           px-5 py-3.5 text-manuscrito-700 font-sans leading-relaxed shadow-sm;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Markdown styles inside assistant bubbles */
+.assistant-markdown h1,
+.assistant-markdown h2,
+.assistant-markdown h3 {
+  @apply font-sans text-manuscrito-900 mt-4 mb-2;
+}
+.assistant-markdown h1 { @apply text-xl font-bold; }
+.assistant-markdown h2 { @apply text-lg font-bold; }
+.assistant-markdown h3 { @apply text-base font-bold; }
+.assistant-markdown p { @apply mb-3 last:mb-0; }
+.assistant-markdown ul, .assistant-markdown ol { @apply ml-5 mb-3 space-y-1; }
+.assistant-markdown ul { @apply list-disc; }
+.assistant-markdown ol { @apply list-decimal; }
+.assistant-markdown blockquote {
+  @apply border-l-2 border-halo-400 pl-4 py-1 my-3 italic text-manuscrito-600 bg-halo-50/50 rounded-r-md;
+}
+.assistant-markdown code {
+  @apply bg-ivory-200 px-1.5 py-0.5 rounded text-sm text-ultramarine-700;
+}
+.assistant-markdown strong { @apply text-manuscrito-900 font-bold; }
+.assistant-markdown em { @apply text-manuscrito-600; }
