@@ -1,44 +1,46 @@
-import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import {
   BookOpen, MessageCircle, GraduationCap, GitCompareArrows,
   Library, ChevronRight, Menu
 } from 'lucide-react';
-import Chat from './Chat';
+import { useAuth } from '../contexts/AuthContext';
 
-export default function Welcome({ onStartChat, onToggleSidebar, sidebarOpen }) {
+export default function Welcome({
+  onStartChat, onOpenBrowser, onOpenComparador,
+  onToggleSidebar, sidebarOpen
+}) {
   const { profile } = useAuth();
-  const [startedChat, setStartedChat] = useState(false);
-  const [newConvId, setNewConvId] = useState(null);
-
-  if (startedChat) {
-    return <Chat conversationId={newConvId} onConversationCreated={(id) => setNewConvId(id)} />;
-  }
+  const isPaid = profile?.plan !== 'gratuito';
 
   const features = [
     {
-      icon: MessageCircle, title: 'Chat con IA Tomista',
+      icon: MessageCircle,
+      title: 'Chat con IA Tomista',
       desc: 'Preguntá en español, busco en latín en 30.529 fragmentos y te respondo con citas exactas.',
-      action: () => setStartedChat(true), available: true,
+      action: onStartChat,
+      available: true,
     },
     {
-      icon: GraduationCap, title: 'Modo Socrático',
+      icon: GraduationCap,
+      title: 'Modo Socrático',
       desc: 'Te guío con preguntas mayéuticas para que descubras la doctrina por vos mismo.',
-      action: () => setStartedChat(true),
-      available: profile?.plan !== 'gratuito',
-      badge: profile?.plan === 'gratuito' ? 'Studioso' : null,
+      action: onStartChat,
+      available: isPaid,
+      badge: !isPaid ? 'Studioso' : null,
     },
     {
-      icon: Library, title: 'Navegador de Obras',
+      icon: Library,
+      title: 'Navegador de Obras',
       desc: 'Explorá la Opera Omnia por obra, cuestión y artículo. Sin consumir créditos.',
-      action: null, available: true, badge: 'Próximamente',
+      action: onOpenBrowser,
+      available: true,
     },
     {
-      icon: GitCompareArrows, title: 'Comparador de Textos',
+      icon: GitCompareArrows,
+      title: 'Comparador de Textos',
       desc: 'Compará cómo Tomás trata un tema en distintas obras: Summa, Sentencias, De Veritate...',
-      action: null,
-      available: profile?.plan !== 'gratuito',
-      badge: 'Próximamente',
+      action: onOpenComparador,
+      available: isPaid,
+      badge: !isPaid ? 'Studioso' : null,
     },
   ];
 
@@ -46,7 +48,10 @@ export default function Welcome({ onStartChat, onToggleSidebar, sidebarOpen }) {
     <div className="flex-1 flex flex-col h-screen overflow-y-auto">
       <header className="shrink-0 px-5 py-3 border-b border-ivory-200 bg-white/60 backdrop-blur-sm flex items-center">
         {!sidebarOpen && (
-          <button onClick={onToggleSidebar} className="p-1.5 mr-3 rounded-md hover:bg-ivory-200 text-manuscrito-400">
+          <button
+            onClick={onToggleSidebar}
+            className="p-1.5 mr-3 rounded-md hover:bg-ivory-200 text-manuscrito-400"
+          >
             <Menu className="w-5 h-5" />
           </button>
         )}
@@ -73,12 +78,16 @@ export default function Welcome({ onStartChat, onToggleSidebar, sidebarOpen }) {
           {/* Features grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
             {features.map(({ icon: Icon, title, desc, action, available, badge }) => (
-              <button key={title} onClick={action} disabled={!action}
+              <button
+                key={title}
+                onClick={action}
+                disabled={!action}
                 className={`group text-left p-5 rounded-xl border transition-all duration-200
                   ${action
                     ? 'bg-white border-ivory-300 hover:border-ultramarine-300 hover:shadow-md cursor-pointer shadow-sm'
                     : 'bg-ivory-50/50 border-ivory-200 cursor-default opacity-60'
-                  }`}>
+                  }`}
+              >
                 <div className="flex items-start justify-between mb-3">
                   <div className={`p-2 rounded-lg border ${available ? 'bg-ultramarine-50 border-ultramarine-200' : 'bg-ivory-100 border-ivory-200'}`}>
                     <Icon className={`w-5 h-5 ${available ? 'text-ultramarine-600' : 'text-manuscrito-300'}`} />
